@@ -17,7 +17,7 @@ dependencies {
     targetCompatibility=JavaVersion.VERSION_1_7
 
     compile gradleApi()
-    compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.3.10.v20160621'
+    //compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.3.10.v20160621'
 
     testCompile 'junit:junit:4.12'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
