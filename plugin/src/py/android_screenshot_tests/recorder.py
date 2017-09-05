@@ -18,6 +18,7 @@ from PIL import Image, ImageChops
 from . import common
 import shutil
 import tempfile
+import math
 
 class VerifyError(Exception):
     pass
@@ -81,7 +82,13 @@ class Recorder:
         with Image.open(file1) as im1, Image.open(file2) as im2:
             diff_image = ImageChops.difference(im1, im2)
             try:
-                return diff_image.getbbox() is None
+                #return diff_image.getbbox() is None
+                h = diff_image.histogram()
+                sq = (value*((idx%256)**2) for idx, value in enumerate(h))
+                sum_of_squares = sum(sq)
+                
+                rms = math.sqrt(sum_of_squares/float(im1.size[0] * im1.size[1]))
+                return rms < 1
             finally:
                 diff_image.close()
 
