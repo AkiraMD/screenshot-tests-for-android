@@ -23,12 +23,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-
 import com.facebook.testing.screenshot.WindowAttachment;
-
+import com.facebook.testing.screenshot.layouthierarchy.LayoutHierarchyDumper;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.Callable;
+import org.json.JSONException;
 
 /**
  * Implementation for Screenshot class.
@@ -55,14 +55,10 @@ public class ScreenshotImpl {
   private int mTileSize = 512;
   private Bitmap mBitmap = null;
   private Canvas mCanvas = null;
-  private ViewHierarchy mViewHierarchy;
   private boolean mEnableBitmapReconfigure = (Build.VERSION.SDK_INT >= 19);
 
-  /* package */ ScreenshotImpl(
-      Album album,
-      ViewHierarchy viewHierarchy) {
+  /* package */ ScreenshotImpl(Album album) {
     mAlbum = album;
-    mViewHierarchy = viewHierarchy;
   }
 
   /**
@@ -74,7 +70,7 @@ public class ScreenshotImpl {
       HostFileSender hostFileSender) {
     Album album = AlbumImpl.createStreaming(context, "default", hostFileSender);
     album.cleanup();
-    return new ScreenshotImpl(album, new ViewHierarchy());
+    return new ScreenshotImpl(album);
   }
 
   /**
@@ -285,9 +281,12 @@ public class ScreenshotImpl {
     OutputStream viewHierarchyDump = null;
     try {
       viewHierarchyDump = mAlbum.openViewHierarchyFile(recordBuilder.getName());
-      mViewHierarchy.deflate(recordBuilder.getView(), viewHierarchyDump);
+      String dump =
+          LayoutHierarchyDumper.create().dumpHierarchy(recordBuilder.getView()).toString(2);
+      viewHierarchyDump.write(dump.getBytes());
+      viewHierarchyDump.flush();
       mAlbum.addRecord(recordBuilder);
-    } catch (IOException e) {
+    } catch (IOException | JSONException e) {
       throw new RuntimeException(e);
     } finally {
       if (viewHierarchyDump != null) {
