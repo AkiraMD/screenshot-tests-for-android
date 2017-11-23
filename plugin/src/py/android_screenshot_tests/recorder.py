@@ -88,7 +88,7 @@ class Recorder:
                 sum_of_squares = sum(sq)
                 
                 rms = math.sqrt(sum_of_squares/float(im1.size[0] * im1.size[1]))
-                return rms < 1
+                return rms < 7
             finally:
                 diff_image.close()
 
