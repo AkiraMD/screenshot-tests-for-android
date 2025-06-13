@@ -1,3 +1,7 @@
+# Archived Repository
+
+This repository has been archived and is no longer maintained.
+
 # Screenshot Tests for Android
 
 <img src="/.github/logo.png" width="150" align="right"/>
